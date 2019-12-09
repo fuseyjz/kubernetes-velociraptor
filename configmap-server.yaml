@@ -1,0 +1,97 @@
+apiVersion: v1
+data:
+  server.config.yaml: |
+    version:
+      name: velociraptor
+      version: 0.3.6
+      commit: b4875f0
+      build_time: "2019-11-13T20:13:28+10:00"
+    Client:
+      server_urls:
+      - https://velociraptor.example.com:8000/
+      ca_certificate: |
+        -----BEGIN CERTIFICATE-----
+        XXX
+        -----END CERTIFICATE-----
+      nonce: NmsDXleerks=
+      writeback_darwin: /etc/velociraptor.writeback.yaml
+      writeback_linux: /etc/velociraptor.writeback.yaml
+      writeback_windows: $ProgramFiles\Velociraptor\velociraptor.writeback.yaml
+      max_poll: 600
+      windows_installer:
+        service_name: Velociraptor
+        install_path: $ProgramFiles\Velociraptor\Velociraptor.exe
+        service_description: Velociraptor service
+      darwin_installer:
+        service_name: com.velocidex.velociraptor
+        install_path: /usr/local/sbin/velociraptor
+      version:
+        name: velociraptor
+        version: 0.3.6
+        commit: b4875f0
+        build_time: "2019-11-13T20:13:28+10:00"
+      pinned_server_name: VelociraptorServer
+      max_upload_size: 5242880
+      local_buffer:
+        memory_size: 52428800
+        disk_size: 1073741824
+        filename: $Temp/Velociraptor_Buffer.bin
+    API:
+      bind_address: 0.0.0.0
+      bind_port: 8001
+      bind_scheme: tcp
+      pinned_gw_name: GRPC_GW
+    GUI:
+      bind_address: 0.0.0.0
+      bind_port: 8889
+      gw_certificate: |
+        -----BEGIN CERTIFICATE-----
+        XXX
+        -----END CERTIFICATE-----
+      gw_private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        XXX
+        -----END RSA PRIVATE KEY-----
+      internal_cidr:
+      - 127.0.0.1/12
+      - 192.168.0.0/16
+      initial_users:
+      - name: jayden.zheng
+        password_hash: XXX
+        password_salt: XXX
+    CA:
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        XXXX
+        -----END RSA PRIVATE KEY-----
+    Frontend:
+      bind_address: 0.0.0.0
+      bind_port: 8000
+      certificate: |
+        -----BEGIN CERTIFICATE-----
+        XXX
+        -----END CERTIFICATE-----
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        XXX
+        -----END RSA PRIVATE KEY-----
+      public_path: /home/ubuntu/velo-datastore/public
+      max_upload_size: 10485760
+    Datastore:
+      implementation: FileBaseDataStore
+      location: /home/ubuntu/velo-datastore
+      filestore_directory: /home/ubuntu/velo-datastore
+    Writeback: {}
+    Mail: {}
+    Logging:
+      output_directory: /home/ubuntu/velo-logs
+      separate_logs_per_component: true
+    Monitoring:
+      bind_address: 0.0.0.0
+      bind_port: 8003
+    api_config: {}
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: serverconfig
+  namespace: velociraptor
