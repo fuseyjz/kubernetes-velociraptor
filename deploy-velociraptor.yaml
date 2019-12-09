@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: velociraptor
+  namespace: velociraptor
+  labels:
+    app: velociraptor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: velociraptor
+  template:
+    metadata:
+      labels:
+        app: velociraptor
+    spec:
+      containers:
+      - name: velociraptor
+        image: XXXX.XXX.ecr.ap-southeast-1.amazonaws.com/repoName:velociraptor
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8889
+          - containerPort: 8000
+        volumeMounts:
+          - name: efs-datastore
+            mountPath: "/home/ubuntu/velo-datastore"
+          - name: efs-logs
+            mountPath: "/home/ubuntu/velo-logs"
+          - name: server-config
+            mountPath: "/home/ubuntu/server.config.yaml"
+            subPath: server.config.yaml
+      volumes:
+        - name: efs-datastore
+          persistentVolumeClaim:
+            claimName: efs
+        - name: efs-logs
+          persistentVolumeClaim:
+            claimName: efs2
+        - name: server-config
+          configMap:
+            name: serverconfig
+            items:
+            - key: server.config.yaml
+              path: server.config.yaml
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: velociraptor
+  namespace: velociraptor
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "environment=dev"
+spec:
+  type: LoadBalancer
+  selector:
+    app: velociraptor
+  ports:
+    - name: gui
+      protocol: TCP
+      port: 8889
+      targetPort: 8889
+    - name: frontend
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
